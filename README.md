@@ -16,7 +16,19 @@ npm run build
 npm run preview
 ```
 
-Deploy `dist/` to any static host. Configure an SPA rewrite to `index.html` so directly opening `/case/404` works.
+Production builds target `/mystery-room/`; local development stays at `/`.
+
+## GitHub Pages
+
+The workflow `.github/workflows/deploy-pages.yml` builds with Node 22 and `npm ci`, then deploys `dist/` on every push to `master`. It can also be started with **Actions → Deploy Mystery Room to GitHub Pages → Run workflow**.
+
+One-time repository setting: **Settings → Pages → Build and deployment → Source → GitHub Actions**. If environment protection rules restrict deployment, allow `master` in the `github-pages` environment. No personal token or repository secret is required; the workflow uses GitHub's scoped token.
+
+Expected URL: https://julyashaa.github.io/mystery-room/
+
+React Router uses Vite's base URL. The build creates `dist/case/404/index.html` for direct visits and refreshes, and `dist/404.html` for unknown paths. GitHub Pages may normalize the case URL to a trailing slash; the route supports both. When adding future routes, include them in `scripts/prepare-pages.mjs`.
+
+Run `npm run preview` and open `/mystery-room/` to check the production build. Check `/mystery-room/case/404/` directly, refresh it, and return to the archive. Assets, preload URLs, and CSS image paths must all stay under `/mystery-room/`.
 
 ## Structure
 
