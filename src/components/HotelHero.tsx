@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { useRef, useState } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { ArrowDown, KeyRound } from 'lucide-react';
+import { useCinematicMotion } from '../hooks/useCinematicMotion';
 
 export function Dust() {
   return <div className="hotel-dust" aria-hidden="true">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ left: `${8 + (i * 23) % 85}%`, top: `${(i * 17) % 90}%`, animationDelay: `${-i * 2.7}s`, animationDuration: `${15 + i % 5 * 3}s` }} />)}</div>;
@@ -8,11 +9,16 @@ export function Dust() {
 
 export default function HotelHero() {
   const reduced = useReducedMotion();
+  const heroRef = useRef<HTMLElement>(null);
+  const cinematic = useCinematicMotion();
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, 160]);
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
   const [phase, setPhase] = useState<'idle' | 'entering' | 'revealing'>('idle');
   const arrive = () => {
-    const corridor = document.getElementById('cases');
+    const corridor = document.getElementById('reception');
     corridor?.scrollIntoView({ behavior: 'instant', block: 'start' });
-    document.getElementById('corridor-title')?.focus({ preventScroll: true });
+    document.getElementById('reception-title')?.focus({ preventScroll: true });
   };
   const enter = () => {
     if (phase !== 'idle') return;
@@ -20,8 +26,8 @@ export default function HotelHero() {
     setPhase('entering');
   };
   return <>
-    <section className={`hero hotel-hero ${phase === 'entering' ? 'is-entering' : ''}`} aria-labelledby="hero-title">
-      <div className="hero-depth"><div className="hero-image" /></div>
+    <section className={`hero hotel-hero ${phase === 'entering' ? 'is-entering' : ''}`} aria-labelledby="hero-title" ref={heroRef}>
+      <div className="hero-depth"><motion.div className="hero-parallax" style={{ y: cinematic ? backgroundY : 0, scale: cinematic ? backgroundScale : 1 }}><div className="hero-image" /></motion.div></div>
       <div className="hero-shade" /><div className="hero-light" /><Dust />
       <div className="hero-content wrap">
         <motion.p className="eyebrow" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .9 }}><span className="red-dot" /> MYSTERY HOTEL / EST. UNKNOWN</motion.p>

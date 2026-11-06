@@ -11,7 +11,7 @@ const rooms = [
   { number: '313', title: 'Четвёртая соседка', subtitle: 'Одна комната. Четыре версии.', teaser: 'Три соседки помнят её по-разному. Четвёртая комната пуста. Но по ночам там горит свет.', time: '40–60 мин', difficulty: 'Средняя', note: 'Кто-то не спит.', available: false },
 ];
 
-export default function HotelDoors() {
+export default function HotelDoors({ hasKey = false }: { hasKey?: boolean }) {
   const reduced = useReducedMotion();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export default function HotelDoors() {
   return <section id="cases" className={`hotel-archive ${opening ? 'room-opening' : ''}`} aria-labelledby="corridor-title">
     <div className="wrap">
       <Reveal><div className="section-heading"><div><p className="eyebrow">01 / ГОСТИНИЧНЫЙ АРХИВ</p><h2 id="corridor-title" tabIndex={-1}>Выберите <em>свою дверь.</em></h2></div><p>Не все номера готовы принять гостей.<br />Но в одном из них история уже началась.</p></div></Reveal>
-      <div className="corridor-sign"><span><KeyRound size={14} /> КЛЮЧИ НА СТОЙКЕ</span><span>404 — 207 — 313</span><span className="corridor-instruction">КОСНИТЕСЬ ДВЕРИ, ЧТОБЫ УЗНАТЬ БОЛЬШЕ</span></div>
+      <div className="corridor-sign"><span><KeyRound size={14} /> {hasKey ? 'КЛЮЧ № 404 У ВАС' : 'КЛЮЧИ НА СТОЙКЕ'}</span><span>404 — 207 — 313</span><span className="corridor-instruction">КОСНИТЕСЬ ДВЕРИ, ЧТОБЫ УЗНАТЬ БОЛЬШЕ</span></div>
       <div className="hotel-gallery"><Dust />{rooms.map(room => {
         const active = selected === room.number || hovered === room.number;
         const isOpening = opening && room.available;
@@ -37,7 +37,7 @@ export default function HotelDoors() {
             <span className="wall-number" aria-hidden="true">{room.number}</span>
             <div className="door-frame">
               <div className="room-beyond" aria-hidden="true"><span className="beyond-light" /><span className="beyond-shadow" /></div>
-              <motion.button type="button" className="hotel-door" aria-label={`${room.title}: ${room.available ? 'открыть дверь и начать расследование' : 'скоро, узнать историю'}`} aria-describedby={`room-detail-${room.number}`} aria-controls={`room-detail-${room.number}`} aria-expanded={room.available ? undefined : selected === room.number} aria-disabled={opening} onFocus={() => setHovered(room.number)} onBlur={() => setHovered(null)} onClick={() => {
+              <motion.button type="button" id={`door-${room.number}`} className="hotel-door" aria-label={`${room.title}: ${room.available ? 'открыть дверь и начать расследование' : 'скоро, узнать историю'}`} aria-describedby={`room-detail-${room.number}`} aria-controls={`room-detail-${room.number}`} aria-expanded={room.available ? undefined : selected === room.number} aria-disabled={opening} onFocus={() => setHovered(room.number)} onBlur={() => setHovered(null)} onClick={() => {
                 if (opening) return;
                 if (room.available) openRoom();
                 else setSelected(selected === room.number ? null : room.number);
