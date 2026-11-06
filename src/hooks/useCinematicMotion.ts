@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 
 /** Keep native scrolling on small screens, but do not rely on pointer heuristics.
@@ -6,13 +5,8 @@ import { useReducedMotion } from 'motion/react';
  * the whole corridor into a static composition. */
 export function useCinematicMotion() {
   const reduced = useReducedMotion();
-  const [desktop, setDesktop] = useState(false);
-  useEffect(() => {
-    const media = window.matchMedia('(min-width: 700px)');
-    const update = () => setDesktop(media.matches);
-    update();
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
-  }, []);
-  return desktop && !reduced;
+  // Keep the native touch scroll path active on phones. The corridor uses a
+  // fixed visual scene plus a normal document track, so it does not need a
+  // desktop-only pointer heuristic to animate.
+  return !reduced;
 }
