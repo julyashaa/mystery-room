@@ -4,6 +4,7 @@ import { KeyRound, X } from 'lucide-react';
 import { Dust } from './HotelHero';
 import { Reveal } from './UI';
 import Flashlight from './Flashlight';
+import { ReceptionKey } from './ReceptionKey';
 import { useCinematicMotion } from '../hooks/useCinematicMotion';
 
 type Props = { hasKey: boolean; onTakeKey: () => void };
@@ -48,7 +49,7 @@ export default function Reception({ hasKey, onTakeKey }: Props) {
             <span className="registry-book" aria-hidden="true"><i /><span>ЖУРНАЛ<br />ПОСТОЯЛЬЦЕВ</span><small>MYSTERY HOTEL</small><b>✦</b></span><span className="object-caption"><b>02</b> ЗАГЛЯНУТЬ В ЖУРНАЛ</span>
           </button></div>
           <div className="desk-object key-object"><button type="button" className={`object-button room-key-button ${hasKey ? 'key-collected' : ''}`} onClick={onTakeKey} aria-label={hasKey ? 'Ключ от номера 404 уже у вас' : 'Взять ключ от номера 404'} aria-pressed={hasKey}>
-            <span className="reception-key" aria-hidden="true"><i className="key-ring" /><span className="key-metal"><i /></span><span className="key-tag"><small>MYSTERY HOTEL</small><strong>404</strong><b>НЕ ТЕРЯЙТЕ</b></span></span><span className="object-caption"><b>03</b> {hasKey ? 'КЛЮЧ УЖЕ У ВАС · ПРОДОЛЖИТЬ ПУТЬ' : 'ВОЗЬМИТЕ КЛЮЧ'}</span>
+            <ReceptionKey /><span className="object-caption"><b>03</b> {hasKey ? 'КЛЮЧ УЖЕ У ВАС · ПРОДОЛЖИТЬ ПУТЬ' : 'ВОЗЬМИТЕ КЛЮЧ'}</span>
           </button></div>
         </div>
         <span className="desk-brass-label" aria-hidden="true">ПОЖАЛУЙСТА, НЕ БУДИТЕ ПРОШЛОЕ</span>
